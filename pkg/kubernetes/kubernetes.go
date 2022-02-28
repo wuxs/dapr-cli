@@ -16,6 +16,7 @@ package kubernetes
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -35,7 +36,7 @@ import (
 	cli_ver "github.com/dapr/cli/pkg/version"
 )
 
-const (
+var (
 	daprReleaseName = "dapr"
 	daprHelmRepo    = "https://dapr.github.io/helm-charts"
 	latestVersion   = "latest"
@@ -54,6 +55,9 @@ type InitConfiguration struct {
 // Init deploys the Dapr operator using the supplied runtime version.
 func Init(config InitConfiguration) error {
 	msg := "Deploying the Dapr control plane to your cluster..."
+	if value := viper.GetString("helm-repository"); value != "" {
+		daprHelmRepo = value
+	}
 
 	stopSpinning := print.Spinner(os.Stdout, msg)
 	defer stopSpinning(print.Failure)

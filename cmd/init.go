@@ -43,6 +43,7 @@ var InitCmd = &cobra.Command{
 	Short: "Install Dapr on supported hosting platforms. Supported platforms: Kubernetes and self-hosted",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		viper.BindPFlag("network", cmd.Flags().Lookup("network"))
+		viper.BindPFlag("helm-repository", cmd.Flags().Lookup("helm-repository"))
 	},
 	Example: `
 # Initialize Dapr in self-hosted mode
@@ -62,6 +63,9 @@ dapr init -k --runtime-version 0.10.0
 
 # Initialize Dapr in slim self-hosted mode
 dapr init -s
+
+#Initialize Dapr with a provided helm charts repository.
+dapr init --helm-repository <repository-url>
 
 # See more at: https://docs.dapr.io/getting-started/
 `,
@@ -126,5 +130,6 @@ func init() {
 	InitCmd.Flags().String("network", "", "The Docker network on which to deploy the Dapr runtime")
 	InitCmd.Flags().BoolP("help", "h", false, "Print this help message")
 	InitCmd.Flags().StringArrayVar(&values, "set", []string{}, "set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)")
+	InitCmd.Flags().String("helm-repository", "", "Custom/Private helm chart repository url")
 	RootCmd.AddCommand(InitCmd)
 }
